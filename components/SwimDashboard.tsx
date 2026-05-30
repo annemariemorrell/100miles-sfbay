@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { deleteSwimAction } from "@/app/actions";
+import { FloatingSeals } from "@/components/FloatingSeals";
 import { LogSwimForm } from "@/components/LogSwimForm";
 import { PodLeaderboard } from "@/components/PodLeaderboard";
 import { ProgressRing } from "@/components/ProgressRing";
@@ -152,6 +153,7 @@ export function SwimDashboard({
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col px-5 py-8 sm:px-8 lg:py-12">
+      <FloatingSeals />
       <header className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-[#1D9E75]">
