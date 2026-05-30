@@ -1,30 +1,41 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-export type Swim = {
-  id: number;
-  date: string;
-  distance_miles: number;
-  notes: string | null;
-  created_at: string;
-};
-
-type SwimInsert = {
-  date: string;
-  distance_miles: number;
-  notes?: string | null;
-};
-
 export type Database = {
   public: {
     Tables: {
       swims: {
-        Row: Swim;
-        Insert: SwimInsert;
-        Update: Partial<SwimInsert>;
+        Row: {
+          id: number;
+          date: string;
+          distance_miles: number;
+          notes: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: number;
+          date: string;
+          distance_miles: number;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: number;
+          date?: string;
+          distance_miles?: number;
+          notes?: string | null;
+          created_at?: string;
+        };
+        Relationships: [];
       };
     };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+    Enums: Record<string, never>;
+    CompositeTypes: Record<string, never>;
   };
 };
+
+export type Swim = Database["public"]["Tables"]["swims"]["Row"];
 
 export function getSupabaseClient(): SupabaseClient<Database> | null {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
