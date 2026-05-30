@@ -34,3 +34,47 @@ input,
 textarea {
   font: inherit;
 }
+
+.floating-seals {
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: fixed;
+  z-index: 10;
+}
+
+.floating-seal {
+  animation-name: seal-hover;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  filter: drop-shadow(0 10px 18px rgba(15, 23, 42, 0.12));
+  opacity: 0.42;
+  position: absolute;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+@keyframes seal-hover {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(-8deg);
+  }
+
+  25% {
+    transform: translate3d(0.65rem, -0.9rem, 0) rotate(7deg);
+  }
+
+  50% {
+    transform: translate3d(-0.35rem, -1.65rem, 0) rotate(-3deg);
+  }
+
+  75% {
+    transform: translate3d(0.5rem, -0.7rem, 0) rotate(9deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .floating-seal {
+    animation: none;
+  }
+}
