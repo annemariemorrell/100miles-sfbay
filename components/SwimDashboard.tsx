@@ -32,26 +32,31 @@ function namesMatch(first: string, second: string) {
   return first.trim() === second.trim();
 }
 
-type WelcomeScreenProps = {
+type WelcomeModalProps = {
   onSave: (name: string) => boolean;
 };
 
-function WelcomeScreen({ onSave }: WelcomeScreenProps) {
+function WelcomeModal({ onSave }: WelcomeModalProps) {
   const [draftName, setDraftName] = useState("");
   const [error, setError] = useState("");
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-3xl flex-col items-center justify-center px-5 py-8 text-center sm:px-8">
-      <div className="w-full rounded-[2rem] border border-white/70 bg-white/85 p-8 shadow-soft backdrop-blur sm:p-10">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-5 py-8 text-center backdrop-blur-sm">
+      <div
+        aria-labelledby="welcome-title"
+        aria-modal="true"
+        className="w-full max-w-2xl rounded-[2rem] border border-white/70 bg-white/95 p-8 shadow-soft sm:p-10"
+        role="dialog"
+      >
         <p className="text-5xl" aria-hidden="true">🦭</p>
         <p className="mt-6 text-sm font-semibold uppercase tracking-[0.3em] text-[#1D9E75]">
           Welcome to the bay pod
         </p>
-        <h1 className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
+        <h2 id="welcome-title" className="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
           What&apos;s your name?
-        </h1>
+        </h2>
         <p className="mt-4 text-lg leading-8 text-slate-600">
-          Pick a swimmer name to track your own 100-mile season while sharing the water with the whole pod.
+          Pick a swimmer name to unlock your personal progress, log swims, and join the shared pod leaderboard.
         </p>
         <form
           className="mt-8 flex flex-col gap-3 sm:flex-row"
@@ -63,6 +68,7 @@ function WelcomeScreen({ onSave }: WelcomeScreenProps) {
           }}
         >
           <input
+            autoFocus
             className="min-w-0 flex-1 rounded-full border border-slate-200 bg-white px-5 py-3 text-slate-950 outline-none transition focus:border-[#1D9E75] focus:ring-4 focus:ring-[#1D9E75]/15"
             onChange={(event) => {
               setDraftName(event.target.value);
@@ -80,9 +86,10 @@ function WelcomeScreen({ onSave }: WelcomeScreenProps) {
         </form>
         {error ? <p className="mt-3 text-sm text-red-600">{error}</p> : null}
       </div>
-    </main>
+    </div>
   );
 }
+
 
 export function SwimDashboard({
   daysRemaining,
@@ -116,10 +123,6 @@ export function SwimDashboard({
         <div className="h-64 animate-pulse rounded-[2rem] bg-white/70" />
       </main>
     );
-  }
-
-  if (!swimmerName) {
-    return <WelcomeScreen onSave={saveSwimmerName} />;
   }
 
   const handleDelete = (swim: Swim) => {
@@ -182,6 +185,20 @@ export function SwimDashboard({
                 />
                 <button className="font-semibold text-[#1D9E75]" type="submit">Save</button>
               </form>
+            ) : !swimmerName ? (
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="font-medium text-slate-600">No swimmer selected</span>
+                <button
+                  className="font-semibold text-[#1D9E75] hover:text-[#13785A]"
+                  onClick={() => {
+                    setNameDraft("");
+                    setIsChangingName(true);
+                  }}
+                  type="button"
+                >
+                  Set name
+                </button>
+              </div>
             ) : (
               <div className="flex flex-wrap items-center gap-2">
                 <span className="font-medium text-slate-600">Swimming as</span>
@@ -304,6 +321,7 @@ export function SwimDashboard({
         showForm={isReportingSeals}
         swimmerName={swimmerName}
       />
+      {!swimmerName ? <WelcomeModal onSave={saveSwimmerName} /> : null}
     </main>
   );
 }
