@@ -9,6 +9,7 @@ export type Database = {
           date: string;
           distance_miles: number;
           notes: string | null;
+          swimmer_name: string;
           created_at: string;
         };
         Insert: {
@@ -16,6 +17,7 @@ export type Database = {
           date: string;
           distance_miles: number;
           notes?: string | null;
+          swimmer_name: string;
           created_at?: string;
         };
         Update: {
@@ -23,6 +25,31 @@ export type Database = {
           date?: string;
           distance_miles?: number;
           notes?: string | null;
+          swimmer_name?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      seal_sightings: {
+        Row: {
+          id: string;
+          count: number;
+          reported_by: string;
+          note: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          count: number;
+          reported_by: string;
+          note?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          count?: number;
+          reported_by?: string;
+          note?: string | null;
           created_at?: string;
         };
         Relationships: [];
@@ -36,6 +63,7 @@ export type Database = {
 };
 
 export type Swim = Database["public"]["Tables"]["swims"]["Row"];
+export type SealSighting = Database["public"]["Tables"]["seal_sightings"]["Row"];
 
 export function getSupabaseClient(): SupabaseClient<Database> | null {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

@@ -17,7 +17,7 @@ export default function LogPage() {
           Add today&apos;s bay miles
         </h1>
         <p className="mt-4 text-lg leading-8 text-slate-600">
-          Save the date, distance, and any notes about conditions at Aquatic Park.
+          Save the date, distance, and any notes about conditions, currents, or seal escorts at Aquatic Park.
         </p>
       </div>
       <div className="mt-8">
