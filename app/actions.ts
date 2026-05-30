@@ -9,6 +9,17 @@ export type FormState = {
   success?: boolean;
 };
 
+type SwimFields = {
+  date: string;
+  swimmer_name: string;
+  distance_miles: number;
+  notes: string | null;
+};
+
+type ParsedSwimFields =
+  | { value: SwimFields; error?: never }
+  | { error: string; value?: never };
+
 function getTrimmedValue(formData: FormData, key: string) {
   return String(formData.get(key) ?? "").trim();
 }
@@ -27,7 +38,7 @@ function getConfiguredSupabase() {
   return { supabase, error: null };
 }
 
-function parseSwimFields(formData: FormData) {
+function parseSwimFields(formData: FormData): ParsedSwimFields {
   const date = getTrimmedValue(formData, "date");
   const swimmerName = getTrimmedValue(formData, "swimmer_name");
   const distanceValue = Number(formData.get("distance_miles"));
@@ -61,7 +72,7 @@ export async function createSwimAction(
 ): Promise<FormState> {
   const parsed = parseSwimFields(formData);
 
-  if (parsed.error) {
+  if ("error" in parsed) {
     return { error: parsed.error };
   }
 
@@ -88,7 +99,7 @@ export async function updateSwimAction(
   const parsed = parseSwimFields(formData);
   const swimId = Number(formData.get("id"));
 
-  if (parsed.error) {
+  if ("error" in parsed) {
     return { error: parsed.error };
   }
 

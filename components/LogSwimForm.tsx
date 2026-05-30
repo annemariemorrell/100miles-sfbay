@@ -34,10 +34,6 @@ export function LogSwimForm({
   const [state, formAction, isPending] = useActionState(action, initialState);
 
   useEffect(() => {
-    setNameDraft(currentSwimmerName);
-  }, [currentSwimmerName]);
-
-  useEffect(() => {
     if (state.success) {
       onSuccess?.();
     }
