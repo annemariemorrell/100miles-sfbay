@@ -139,19 +139,21 @@ else
 fi
 wait_for "Supabase REST proxy" bash -c "curl -sf http://${PGHOST_LOCAL}:${SUPABASE_API_PORT}/health -o /dev/null"
 
-########################################
-# 5. Next.js dev server
-########################################
-if ! port_open 3000; then
-  echo "[start] Starting Next.js dev server on :3000..."
-  ( cd "$REPO_ROOT" && nohup npm run dev >"$LOG_DIR/nextdev.log" 2>&1 & disown || true )
-else
-  echo "[start] Next.js dev server already running."
-fi
-wait_for "Next.js" bash -c "curl -sf http://127.0.0.1:3000/ -o /dev/null"
-
-echo "[start] All services up:"
+echo "[start] Backend ready:"
 echo "  - PostgreSQL   127.0.0.1:${PGPORT}"
 echo "  - PostgREST    127.0.0.1:${POSTGREST_PORT}"
 echo "  - Supabase API ${SUPABASE_URL} (/rest/v1 -> PostgREST)"
-echo "  - Next.js app  http://localhost:3000"
+
+########################################
+# 5. Next.js dev server (foreground)
+########################################
+# Runs attached so the pod's start process stays alive as the app for the
+# lifetime of the container. Postgres and nginx daemonize; PostgREST runs
+# detached above. A fresh boot has nothing on :3000, so we exec the dev server.
+cd "$REPO_ROOT"
+if port_open 3000; then
+  echo "[start] Next.js already running on :3000; leaving it in place."
+else
+  echo "[start] Starting Next.js dev server on :3000 (foreground)..."
+  exec npm run dev
+fi
