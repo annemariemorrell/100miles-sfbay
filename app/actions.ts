@@ -1,12 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { getGoalMiles } from "@/lib/season";
 import { getSupabaseClient } from "@/lib/supabase";
 
 export type FormState = {
   error?: string;
   success?: boolean;
+  reachedGoal?: boolean;
 };
 
 type SwimFields = {
@@ -66,6 +67,23 @@ function parseSwimFields(formData: FormData): ParsedSwimFields {
   };
 }
 
+async function hasReachedSeasonGoal(
+  supabase: NonNullable<ReturnType<typeof getSupabaseClient>>,
+  swimmerName: string,
+) {
+  const { data, error } = await supabase
+    .from("swims")
+    .select("distance_miles")
+    .eq("swimmer_name", swimmerName);
+
+  if (error || !data) {
+    return false;
+  }
+
+  const totalMiles = data.reduce((total, swim) => total + Number(swim.distance_miles), 0);
+  return totalMiles >= getGoalMiles();
+}
+
 export async function createSwimAction(
   _previousState: FormState,
   formData: FormData,
@@ -88,8 +106,10 @@ export async function createSwimAction(
     return { error: error.message };
   }
 
+  const reachedGoal = await hasReachedSeasonGoal(supabase, parsed.value.swimmer_name);
+
   revalidatePath("/");
-  redirect("/");
+  return { success: true, reachedGoal };
 }
 
 export async function updateSwimAction(
@@ -129,8 +149,10 @@ export async function updateSwimAction(
     return { error: "Only the swimmer who logged this swim can edit it." };
   }
 
+  const reachedGoal = await hasReachedSeasonGoal(supabase, parsed.value.swimmer_name);
+
   revalidatePath("/");
-  return { success: true };
+  return { success: true, reachedGoal };
 }
 
 export async function deleteSwimAction(swimId: number, swimmerName: string): Promise<FormState> {

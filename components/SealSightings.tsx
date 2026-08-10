@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect } from "react";
 import { createSealSightingAction, type FormState } from "@/app/actions";
+import { celebrate } from "@/lib/confetti";
 import { formatDateTime } from "@/lib/format";
 import type { SealSighting } from "@/lib/supabase";
 
@@ -27,6 +28,7 @@ function SealReportForm({ onCancel, onSuccess, swimmerName }: SealReportFormProp
 
   useEffect(() => {
     if (state.success) {
+      celebrate();
       onSuccess();
     }
   }, [onSuccess, state.success]);
