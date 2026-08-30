@@ -28,6 +28,12 @@ function subscribeToSwimmerNameChanges(onStoreChange: () => void) {
 }
 
 export function useSwimmerIdentity() {
+  const isLoaded = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+
   const swimmerName = useSyncExternalStore(
     subscribeToSwimmerNameChanges,
     getStoredSwimmerName,
@@ -48,7 +54,7 @@ export function useSwimmerIdentity() {
 
   return {
     swimmerName,
-    isLoaded: true,
+    isLoaded,
     saveSwimmerName,
   };
 }
