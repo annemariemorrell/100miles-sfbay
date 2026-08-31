@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import {
   createSwimAction,
@@ -8,6 +9,7 @@ import {
   updateSwimAction,
 } from "@/app/actions";
 import { useSwimmerIdentity } from "@/hooks/useSwimmerIdentity";
+import { celebrate, celebrateGoal } from "@/lib/confetti";
 import type { Swim } from "@/lib/supabase";
 
 const initialState: FormState = {};
@@ -27,6 +29,7 @@ export function LogSwimForm({
   swim,
   swimmerName,
 }: LogSwimFormProps) {
+  const router = useRouter();
   const { swimmerName: storedSwimmerName, isLoaded, saveSwimmerName } = useSwimmerIdentity();
   const currentSwimmerName = swimmerName ?? storedSwimmerName;
   const [nameDraft, setNameDraft] = useState(currentSwimmerName);
@@ -34,10 +37,24 @@ export function LogSwimForm({
   const [state, formAction, isPending] = useActionState(action, initialState);
 
   useEffect(() => {
-    if (state.success) {
-      onSuccess?.();
+    if (!state.success) {
+      return;
     }
-  }, [onSuccess, state.success]);
+
+    if (state.reachedGoal) {
+      celebrateGoal();
+    } else {
+      celebrate();
+    }
+
+    if (onSuccess) {
+      onSuccess();
+      return;
+    }
+
+    router.push("/");
+    router.refresh();
+  }, [onSuccess, router, state.reachedGoal, state.success]);
 
   if (!currentSwimmerName && isLoaded) {
     return (

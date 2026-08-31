@@ -20,12 +20,14 @@
   "homepage": "https://github.com/annemariemorrell/100miles-sfbay#readme",
   "dependencies": {
     "@supabase/supabase-js": "^2.106.2",
+    "canvas-confetti": "^1.9.4",
     "next": "^16.2.6",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.0",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
