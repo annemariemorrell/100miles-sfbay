@@ -7,6 +7,7 @@ import { deleteSwimAction } from "@/app/actions";
 import { FloatingSeals } from "@/components/FloatingSeals";
 import { LogSwimForm } from "@/components/LogSwimForm";
 import { PodLeaderboard } from "@/components/PodLeaderboard";
+import { PodPacing } from "@/components/PodPacing";
 import { ProgressRing } from "@/components/ProgressRing";
 import { RecentSwims } from "@/components/RecentSwims";
 import { SealSightings } from "@/components/SealSightings";
@@ -264,6 +265,8 @@ export function SwimDashboard({
           />
         </div>
       </section>
+
+      <PodPacing goalMiles={goalMiles} swims={swims} />
 
       <section className="mt-12">
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">

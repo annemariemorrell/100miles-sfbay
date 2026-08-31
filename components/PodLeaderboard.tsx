@@ -1,4 +1,5 @@
 import { formatMiles } from "@/lib/format";
+import { getPodEntries } from "@/lib/pod-stats";
 import type { Swim } from "@/lib/supabase";
 
 type PodLeaderboardProps = {
@@ -6,39 +7,8 @@ type PodLeaderboardProps = {
   swims: Swim[];
 };
 
-type PodEntry = {
-  name: string;
-  totalMiles: number;
-  totalSwims: number;
-};
-
-function getLeaderboard(swims: Swim[]) {
-  const entries = new Map<string, PodEntry>();
-
-  for (const swim of swims) {
-    const name = swim.swimmer_name.trim() || "Mystery swimmer";
-    const existing = entries.get(name) ?? {
-      name,
-      totalMiles: 0,
-      totalSwims: 0,
-    };
-
-    existing.totalMiles += Number(swim.distance_miles);
-    existing.totalSwims += 1;
-    entries.set(name, existing);
-  }
-
-  return Array.from(entries.values()).sort((first, second) => {
-    if (second.totalMiles !== first.totalMiles) {
-      return second.totalMiles - first.totalMiles;
-    }
-
-    return first.name.localeCompare(second.name);
-  });
-}
-
 export function PodLeaderboard({ currentSwimmerName, swims }: PodLeaderboardProps) {
-  const leaderboard = getLeaderboard(swims);
+  const leaderboard = getPodEntries(swims);
 
   return (
     <section className="mt-12">
